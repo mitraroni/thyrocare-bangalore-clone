@@ -173,3 +173,105 @@ export const footerContacts = sqliteTable('footer_contacts', {
   createdAt: text('created_at').notNull(),
   updatedAt: text('updated_at').notNull(),
 });
+
+// Add blog system tables
+export const blogs = sqliteTable('blogs', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  title: text('title').notNull(),
+  slug: text('slug').notNull().unique(),
+  content: text('content'),
+  excerpt: text('excerpt'),
+  featuredImageUrl: text('featured_image_url'),
+  authorId: text('author_id').notNull().references(() => user.id),
+  status: text('status').notNull().default('draft'),
+  metaTitle: text('meta_title'),
+  metaDescription: text('meta_description'),
+  tags: text('tags'),
+  publishedAt: text('published_at'),
+  createdAt: text('created_at').notNull(),
+  updatedAt: text('updated_at').notNull(),
+});
+
+export const blogCategories = sqliteTable('blog_categories', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  name: text('name').notNull(),
+  slug: text('slug').notNull().unique(),
+  description: text('description'),
+  createdAt: text('created_at').notNull(),
+  updatedAt: text('updated_at').notNull(),
+});
+
+export const blogTags = sqliteTable('blog_tags', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  name: text('name').notNull(),
+  slug: text('slug').notNull().unique(),
+  createdAt: text('created_at').notNull(),
+  updatedAt: text('updated_at').notNull(),
+});
+
+export const blogCategoryRelations = sqliteTable('blog_category_relations', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  blogId: integer('blog_id').notNull().references(() => blogs.id, { onDelete: 'cascade' }),
+  categoryId: integer('category_id').notNull().references(() => blogCategories.id, { onDelete: 'cascade' }),
+  createdAt: text('created_at').notNull(),
+});
+
+export const blogTagRelations = sqliteTable('blog_tag_relations', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  blogId: integer('blog_id').notNull().references(() => blogs.id, { onDelete: 'cascade' }),
+  tagId: integer('tag_id').notNull().references(() => blogTags.id, { onDelete: 'cascade' }),
+  createdAt: text('created_at').notNull(),
+});
+
+export const testimonials = sqliteTable('testimonials', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  name: text('name').notNull(),
+  designation: text('designation'),
+  company: text('company'),
+  content: text('content').notNull(),
+  rating: integer('rating').default(5),
+  imageUrl: text('image_url'),
+  status: text('status').notNull().default('active'),
+  createdAt: text('created_at').notNull(),
+  updatedAt: text('updated_at').notNull(),
+});
+
+export const teamMembers = sqliteTable('team_members', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  name: text('name').notNull(),
+  designation: text('designation').notNull(),
+  bio: text('bio'),
+  imageUrl: text('image_url'),
+  email: text('email'),
+  phone: text('phone'),
+  socialLinks: text('social_links', { mode: 'json' }),
+  orderPosition: integer('order_position').default(0),
+  status: text('status').notNull().default('active'),
+  createdAt: text('created_at').notNull(),
+  updatedAt: text('updated_at').notNull(),
+});
+
+export const gallery = sqliteTable('gallery', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  title: text('title').notNull(),
+  imageUrl: text('image_url').notNull(),
+  altText: text('alt_text'),
+  category: text('category'),
+  description: text('description'),
+  orderPosition: integer('order_position').default(0),
+  status: text('status').notNull().default('active'),
+  createdAt: text('created_at').notNull(),
+  updatedAt: text('updated_at').notNull(),
+});
+
+export const announcements = sqliteTable('announcements', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  title: text('title').notNull(),
+  content: text('content').notNull(),
+  type: text('type').notNull().default('info'),
+  startDate: text('start_date').notNull(),
+  endDate: text('end_date'),
+  status: text('status').notNull().default('active'),
+  createdAt: text('created_at').notNull(),
+  updatedAt: text('updated_at').notNull(),
+});
