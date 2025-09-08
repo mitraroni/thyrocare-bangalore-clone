@@ -3,15 +3,18 @@
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, ShoppingCart } from 'lucide-react';
+import { useCart } from '@/contexts/cart-context';
+import { Badge } from '@/components/ui/badge';
 
 export const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
+  const { totalItems } = useCart();
 
   const navigationItems = [
     { label: 'Home', href: '/' },
-    { label: 'Blood Test', href: '/blood-test' },
+    { label: 'Blood Tests', href: '/blood-tests' },
     { label: 'Special Offer', href: '/special-offer' },
     { label: 'Blog', href: '/blog' },
     { label: 'All Packages', href: '/packages' },
@@ -83,21 +86,55 @@ export const Navigation = () => {
                   />
                 </Link>
               ))}
+              
+              {/* Cart Icon */}
+              <Link 
+                href="/cart"
+                className="relative p-2 text-gray-700 hover:text-primary transition-colors duration-300"
+              >
+                <ShoppingCart className="h-6 w-6" />
+                {totalItems > 0 && (
+                  <Badge 
+                    variant="destructive" 
+                    className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 text-xs flex items-center justify-center bg-primary hover:bg-primary"
+                  >
+                    {totalItems > 99 ? '99+' : totalItems}
+                  </Badge>
+                )}
+              </Link>
             </div>
 
             {/* Mobile Menu Button */}
-            <button
-              onClick={toggleMobileMenu}
-              className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors duration-300"
-              aria-label="Toggle mobile menu"
-              aria-expanded={isMobileMenuOpen}
-            >
-              {isMobileMenuOpen ? (
-                <X className="h-6 w-6 text-gray-700" />
-              ) : (
-                <Menu className="h-6 w-6 text-gray-700" />
-              )}
-            </button>
+            <div className="md:hidden flex items-center space-x-2">
+              {/* Mobile Cart Icon */}
+              <Link 
+                href="/cart"
+                className="relative p-2 text-gray-700 hover:text-primary transition-colors duration-300"
+              >
+                <ShoppingCart className="h-6 w-6" />
+                {totalItems > 0 && (
+                  <Badge 
+                    variant="destructive" 
+                    className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 text-xs flex items-center justify-center bg-primary hover:bg-primary"
+                  >
+                    {totalItems > 99 ? '99+' : totalItems}
+                  </Badge>
+                )}
+              </Link>
+              
+              <button
+                onClick={toggleMobileMenu}
+                className="p-2 rounded-lg hover:bg-gray-100 transition-colors duration-300"
+                aria-label="Toggle mobile menu"
+                aria-expanded={isMobileMenuOpen}
+              >
+                {isMobileMenuOpen ? (
+                  <X className="h-6 w-6 text-gray-700" />
+                ) : (
+                  <Menu className="h-6 w-6 text-gray-700" />
+                )}
+              </button>
+            </div>
           </div>
         </div>
       </nav>
@@ -143,6 +180,30 @@ export const Navigation = () => {
               {item.label}
             </Link>
           ))}
+          
+          {/* Mobile Cart Link */}
+          <Link
+            href="/cart"
+            onClick={closeMobileMenu}
+            className={`flex items-center justify-between px-6 py-4 text-base font-medium transition-colors duration-300 hover:bg-gray-50 hover:text-primary border-l-4 ${
+              pathname === '/cart'
+                ? 'text-primary bg-red-50 border-primary'
+                : 'text-gray-700 border-transparent hover:border-primary'
+            }`}
+          >
+            <span className="flex items-center">
+              <ShoppingCart className="h-5 w-5 mr-3" />
+              Cart
+            </span>
+            {totalItems > 0 && (
+              <Badge 
+                variant="destructive" 
+                className="bg-primary hover:bg-primary"
+              >
+                {totalItems}
+              </Badge>
+            )}
+          </Link>
         </div>
 
         {/* Mobile Menu Footer */}
