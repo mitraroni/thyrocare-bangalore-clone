@@ -16,7 +16,10 @@ import {
   X,
   LogOut,
   User,
-  Loader2
+  Loader2,
+  BookOpen,
+  Tags,
+  FileText
 } from "lucide-react";
 
 interface AdminDashboardLayoutProps {
@@ -39,7 +42,7 @@ const navigationItems: NavigationItem[] = [
   { name: "Site Settings", href: "/admin/settings", icon: Settings },
 ];
 
-export const AdminDashboardLayout = ({ children }: AdminDashboardLayoutProps) => {
+export default function AdminDashboardLayout({ children }: AdminDashboardLayoutProps) {
   const { data: session, isPending, refetch } = useSession();
   const router = useRouter();
   const pathname = usePathname();
