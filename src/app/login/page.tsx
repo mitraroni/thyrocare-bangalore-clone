@@ -167,7 +167,7 @@ export default function AdminLoginPage() {
                   id="email"
                   name="email"
                   type="email"
-                  placeholder="admin@medilabdiagnostics.com"
+                  placeholder="admin@medicallab.com"
                   value={formData.email}
                   onChange={handleInputChange}
                   className={`transition-all duration-200 ${
@@ -248,6 +248,16 @@ export default function AdminLoginPage() {
                 ) : (
                   "Sign In to Admin Panel"
                 )}
+              </Button>
+
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full text-text-dark"
+                onClick={() => setFormData({ email: "admin@medicallab.com", password: "admin123", rememberMe: true })}
+                disabled={isLoading}
+              >
+                Use demo credentials (admin@medicallab.com / admin123)
               </Button>
             </form>
 
