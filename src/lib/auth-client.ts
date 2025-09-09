@@ -1,4 +1,3 @@
-
 "use client"
 import { createAuthClient } from "better-auth/react"
 import { useEffect, useState } from "react"
@@ -14,6 +13,10 @@ export const authClient = createAuthClient({
           // Store the token securely (e.g., in localStorage)
           if(authToken){
             localStorage.setItem("bearer_token", authToken);
+            // also set a cookie so middleware can read it
+            if (typeof document !== 'undefined') {
+              document.cookie = `bearer_token=${authToken}; Path=/; Max-Age=${60 * 60 * 24 * 30}; SameSite=Lax`;
+            }
           }
       }
   }

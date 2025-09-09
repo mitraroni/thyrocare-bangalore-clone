@@ -64,12 +64,6 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
-  useEffect(() => {
-    if (!isPending && !session?.user) {
-      router.push('/login');
-    }
-  }, [session, isPending, router]);
-
   const fetchDashboardData = async () => {
     try {
       const token = localStorage.getItem('bearer_token');
