@@ -23,7 +23,7 @@ const PackageCard = ({ pkg }: { pkg: Package }) => {
   const displayPrice = pkg.discountPrice || pkg.price;
 
   return (
-    <div className="flex flex-col border border-border rounded-lg shadow-sm bg-card min-h-[200px] max-h-[220px] overflow-hidden">
+    <div className="flex flex-col border border-border rounded-lg shadow-sm bg-card min-h-[240px] h-full">
       <div className="flex-shrink-0 flex items-start justify-between p-2 bg-red-50 min-h-[50px] cursor-pointer">
         <h3 className="flex-1 text-xs font-bold text-text-dark leading-4 pr-2 line-clamp-2">
           {pkg.name}
@@ -67,12 +67,12 @@ const PackageCard = ({ pkg }: { pkg: Package }) => {
           </div>
           
           <div className="flex gap-1">
-            <button className="flex-1 bg-secondary text-secondary-foreground px-1 py-1.5 rounded text-xs font-medium hover:opacity-90 transition-opacity flex items-center justify-center gap-1">
-              <Eye className="w-2.5 h-2.5" />
+            <button className="flex-1 bg-secondary text-secondary-foreground px-2 py-2 rounded text-sm font-medium hover:opacity-90 transition-opacity flex items-center justify-center gap-1">
+              <Eye className="w-3 h-3" />
               Details
             </button>
-            <button className="flex-1 bg-primary text-primary-foreground px-1 py-1.5 rounded text-xs font-medium hover:bg-secondary-red transition-colors flex items-center justify-center gap-1">
-              <ShoppingCart className="w-2.5 h-2.5" />
+            <button className="flex-1 bg-primary text-primary-foreground px-2 py-2 rounded text-sm font-medium hover:bg-secondary-red transition-colors flex items-center justify-center gap-1">
+              <ShoppingCart className="w-3 h-3" />
               Book
             </button>
           </div>
@@ -154,7 +154,7 @@ const PackageSelection = () => {
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
             {[...Array(12)].map((_, index) => (
               <div key={index} className="border border-border rounded-lg shadow-sm bg-card min-h-[200px] animate-pulse">
                 <div className="h-[50px] bg-gray-200"></div>
@@ -176,7 +176,7 @@ const PackageSelection = () => {
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
               {filteredPackages.map((pkg) => (
                 <PackageCard key={pkg.id} pkg={pkg} />
               ))}
