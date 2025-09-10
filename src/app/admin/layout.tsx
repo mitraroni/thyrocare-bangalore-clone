@@ -48,6 +48,13 @@ export default function AdminDashboardLayout({ children }: AdminDashboardLayoutP
   const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  // Authentication check
+  useEffect(() => {
+    if (!isPending && !session?.user) {
+      router.push("/login");
+    }
+  }, [session, isPending, router]);
+
   const handleSignOut = async () => {
     const { error } = await authClient.signOut();
     if (error?.code) {
@@ -77,14 +84,7 @@ export default function AdminDashboardLayout({ children }: AdminDashboardLayoutP
 
   // Don't render anything if not authenticated
   if (!session?.user) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center text-muted-foreground">
-          <p>You are not logged in.</p>
-          <a href="/login" className="text-primary underline">Go to Login</a>
-        </div>
-      </div>
-    );
+    return null;
   }
 
   const getBreadcrumbs = () => {
