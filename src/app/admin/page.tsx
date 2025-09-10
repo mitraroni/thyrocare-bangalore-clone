@@ -66,24 +66,17 @@ export default function AdminDashboard() {
 
   const fetchDashboardData = async () => {
     try {
-      const token = localStorage.getItem('bearer_token');
-      if (!token) {
-        toast.error('Authentication required');
-        router.push('/login');
-        return;
-      }
-
-      const headers = {
-        'Authorization': `Bearer ${token}`,
+      // Remove hard dependency on localStorage token; rely on auth cookies set by backend
+      const commonHeaders = {
         'Content-Type': 'application/json'
-      };
+      } as const;
 
       // Fetch data from all endpoints
       const [packagesRes, faqsRes, appointmentsRes, labInfoRes] = await Promise.all([
-        fetch('/api/admin/packages?limit=100', { headers }),
-        fetch('/api/admin/faqs?limit=100', { headers: { 'Content-Type': 'application/json' } }),
-        fetch('/api/admin/appointments?limit=100', { headers }),
-        fetch('/api/admin/lab-info?limit=100', { headers })
+        fetch('/api/admin/packages?limit=100', { headers: commonHeaders }),
+        fetch('/api/admin/faqs?limit=100', { headers: commonHeaders }),
+        fetch('/api/admin/appointments?limit=100', { headers: commonHeaders }),
+        fetch('/api/admin/lab-info?limit=100', { headers: commonHeaders })
       ]);
 
       const [packages, faqs, appointments, labInfo] = await Promise.all([

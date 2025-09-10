@@ -21,5 +21,6 @@ export async function middleware(request: NextRequest) {
 }
  
 export const config = {
-  matcher: ["/admin/:path*"],
+  // Only protect admin API routes to avoid page-level redirect loops; client pages handle their own auth guard
+  matcher: ["/api/admin/:path*"],
 };

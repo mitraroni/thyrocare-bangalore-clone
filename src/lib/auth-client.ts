@@ -4,22 +4,6 @@ import { useEffect, useState } from "react"
 
 export const authClient = createAuthClient({
    baseURL: typeof window !== 'undefined' ? window.location.origin : process.env.NEXT_PUBLIC_SITE_URL,
-  fetchOptions: {
-      headers: {
-        Authorization: `Bearer ${typeof window !== 'undefined' ? localStorage.getItem("bearer_token") : ""}`,
-      },
-      onSuccess: (ctx) => {
-          const authToken = ctx.response.headers.get("set-auth-token")
-          // Store the token securely (e.g., in localStorage)
-          if(authToken){
-            localStorage.setItem("bearer_token", authToken);
-            // also set a cookie so middleware can read it
-            if (typeof document !== 'undefined') {
-              document.cookie = `bearer_token=${authToken}; Path=/; Max-Age=${60 * 60 * 24 * 30}; SameSite=Lax`;
-            }
-          }
-      }
-  }
 });
 
 type SessionData = ReturnType<typeof authClient.useSession>
@@ -37,14 +21,7 @@ export function useSession(): SessionData {
 
    const fetchSession = async () => {
       try {
-         const res = await authClient.getSession({
-            fetchOptions: {
-               auth: {
-                  type: "Bearer",
-                  token: typeof window !== 'undefined' ? localStorage.getItem("bearer_token") || "" : "",
-               },
-            },
-         });
+         const res = await authClient.getSession();
          setSession(res.data);
          setError(null);
       } catch (err) {
