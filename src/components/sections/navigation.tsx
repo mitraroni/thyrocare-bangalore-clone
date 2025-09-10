@@ -15,10 +15,9 @@ export const Navigation = () => {
   const navigationItems = [
     { label: 'Home', href: '/' },
     { label: 'Blood Tests', href: '/blood-tests' },
-    { label: 'Special Offer', href: '/special-offer' },
     { label: 'Blog', href: '/blog' },
     { label: 'All Packages', href: '/packages' },
-    { label: 'Admin', href: '/admin' },
+    { label: 'Admin', href: '/admin/dashboard' },
   ];
 
   const toggleMobileMenu = () => {
@@ -50,6 +49,8 @@ export const Navigation = () => {
     };
   }, [isMobileMenuOpen]);
 
+  const isActive = (href: string) => (href === '/' ? pathname === '/' : pathname.startsWith(href));
+
   return (
     <>
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 shadow-sm">
@@ -71,7 +72,7 @@ export const Navigation = () => {
                   href={item.href}
                   onClick={closeMobileMenu}
                   className={`text-base font-medium transition-colors duration-300 hover:text-primary relative group ${
-                    pathname === item.href
+                    isActive(item.href)
                       ? 'text-primary'
                       : 'text-gray-700'
                   }`}
@@ -79,7 +80,7 @@ export const Navigation = () => {
                   {item.label}
                   <span 
                     className={`absolute -bottom-1 left-0 h-0.5 bg-primary transition-all duration-300 ${
-                      pathname === item.href 
+                      isActive(item.href)
                         ? 'w-full' 
                         : 'w-0 group-hover:w-full'
                     }`}
@@ -172,7 +173,7 @@ export const Navigation = () => {
               href={item.href}
               onClick={closeMobileMenu}
               className={`flex items-center px-6 py-4 text-base font-medium transition-colors duration-300 hover:bg-gray-50 hover:text-primary border-l-4 ${
-                pathname === item.href
+                isActive(item.href)
                   ? 'text-primary bg-red-50 border-primary'
                   : 'text-gray-700 border-transparent hover:border-primary'
               }`}
