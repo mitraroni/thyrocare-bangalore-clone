@@ -24,7 +24,7 @@ import {
   Stethoscope,
   RefreshCw
 } from 'lucide-react';
-import { AdminDashboardLayout } from './layout';
+import AdminDashboardLayout from './layout';
 import { toast } from 'sonner';
 
 interface StatsCard {

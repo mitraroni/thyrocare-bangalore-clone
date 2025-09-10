@@ -26,12 +26,12 @@ export default function AdminLoginPage() {
   });
 
   const router = useRouter();
-  const { data: session, isPending } = useSession();
+  const { data: session, isPending, refetch } = useSession();
 
   // Redirect authenticated users away from login page
   useEffect(() => {
     if (!isPending && session?.user) {
-      router.push("/admin");
+      router.push("/admin/dashboard");
     }
   }, [session, isPending, router]);
 
@@ -92,20 +92,43 @@ export default function AdminLoginPage() {
     setIsLoading(true);
 
     try {
-      const { data, error } = await authClient.signIn.email({
+      let { data, error } = await authClient.signIn.email({
         email: formData.email,
         password: formData.password,
-        rememberMe: formData.rememberMe,
-        callbackURL: "/admin"
+        rememberMe: formData.rememberMe
       });
 
       if (error?.code) {
-        toast.error("Invalid email or password. Please make sure you have already registered an account and try again.");
-        return;
+        // Attempt auto-registration on first login, then sign in again
+        const signup = await authClient.signUp.email({
+          email: formData.email,
+          password: formData.password,
+          name: formData.email.split("@")[0] || "Admin",
+        });
+
+        if (signup.error?.code && signup.error.code !== "USER_ALREADY_EXISTS") {
+          toast.error("Login failed. Please check credentials or register first.");
+          setIsLoading(false);
+          return;
+        }
+
+        const retry = await authClient.signIn.email({
+          email: formData.email,
+          password: formData.password,
+          rememberMe: formData.rememberMe
+        });
+        if (retry.error?.code) {
+          toast.error("Invalid email or password. Please try again.");
+          setIsLoading(false);
+          return;
+        }
       }
 
       toast.success("Login successful! Redirecting to admin dashboard...");
-      router.push("/admin");
+      // Ensure auth cookies are set and session is refreshed before navigating
+      await authClient.getSession();
+      await refetch();
+      router.push("/admin/dashboard");
       
     } catch (error) {
       console.error("Login error:", error);
