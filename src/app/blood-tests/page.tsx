@@ -12,6 +12,8 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTr
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCart, type Package } from "@/contexts/cart-context";
 import { toast } from "sonner";
+import { Navigation } from '@/components/sections/navigation';
+import Footer from '@/components/sections/footer';
 
 interface TestDetail {
   name: string;
@@ -445,23 +447,28 @@ export default function BloodTestPackagesPage() {
 
   if (error) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center">
-          <div className="text-red-500 text-lg font-medium">{error}</div>
-          <p className="text-gray-600 mt-2">Please try again later or contact support if the problem persists.</p>
-          <Button 
-            onClick={() => window.location.reload()} 
-            className="mt-4 bg-primary hover:bg-primary/90"
-          >
-            Try Again
-          </Button>
+      <main className="min-h-screen">
+        <Navigation />
+        <div className="container mx-auto px-4 py-8">
+          <div className="text-center">
+            <div className="text-red-500 text-lg font-medium">{error}</div>
+            <p className="text-gray-600 mt-2">Please try again later or contact support if the problem persists.</p>
+            <Button 
+              onClick={() => window.location.reload()} 
+              className="mt-4 bg-primary hover:bg-primary/90"
+            >
+              Try Again
+            </Button>
+          </div>
         </div>
-      </div>
+        <Footer />
+      </main>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <main className="min-h-screen bg-background">
+      <Navigation />
       <div className="container mx-auto px-4 py-8">
         {/* Header Section */}
         <div className="text-center mb-8">
@@ -582,6 +589,7 @@ export default function BloodTestPackagesPage() {
           </Sheet>
         </div>
       </div>
-    </div>
+      <Footer />
+    </main>
   );
 }

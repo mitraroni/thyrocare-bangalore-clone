@@ -3,6 +3,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { Search, Filter, Eye, ShoppingCart, ChevronLeft, ChevronRight, ArrowUpDown } from 'lucide-react';
+import { Navigation } from '@/components/sections/navigation';
+import Footer from '@/components/sections/footer';
 
 interface Package {
   id: number;
@@ -134,7 +136,8 @@ export default function PackagesPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <main className="min-h-screen bg-gray-50">
+        <Navigation />
         {/* Header */}
         <div className="bg-white shadow-sm">
           <div className="container py-6">
@@ -173,13 +176,15 @@ export default function PackagesPage() {
             ))}
           </div>
         </div>
-      </div>
+        <Footer />
+      </main>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <main className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <Navigation />
         <div className="text-center">
           <div className="text-6xl mb-4">😔</div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Oops! Something went wrong</h2>
@@ -191,12 +196,14 @@ export default function PackagesPage() {
             Try Again
           </button>
         </div>
-      </div>
+        <Footer />
+      </main>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <main className="min-h-screen bg-gray-50">
+      <Navigation />
       {/* Header */}
       <div className="bg-white shadow-sm">
         <div className="container py-6">
@@ -378,6 +385,7 @@ export default function PackagesPage() {
           </>
         )}
       </div>
-    </div>
+      <Footer />
+    </main>
   );
 }
