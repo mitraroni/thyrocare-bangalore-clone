@@ -53,18 +53,18 @@ export const Navigation = () => {
   return (
     <>
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 shadow-sm">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
+        <div className="container mx-auto px-3 sm:px-4">
+          <div className="flex items-center justify-between h-14 md:h-16">
             {/* Logo */}
             <Link 
               href="/" 
-              className="text-2xl font-bold text-secondary hover:text-primary transition-colors duration-300"
+              className="text-xl md:text-2xl font-bold text-secondary hover:text-primary transition-colors duration-300"
             >
               Thyrocare
             </Link>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-8">
+            <div className="hidden md:flex items-center space-x-6 lg:space-x-8">
               {navigationItems.map((item) => (
                 <Link
                   key={item.href}
@@ -216,7 +216,7 @@ export const Navigation = () => {
       </div>
 
       {/* Spacer to prevent content from being hidden behind fixed nav */}
-      <div className="h-16" />
+      <div className="h-14 md:h-16" />
     </>
   );
 };

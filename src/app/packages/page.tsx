@@ -2,9 +2,10 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { Search, Filter, Eye, ShoppingCart, ChevronLeft, ChevronRight, ArrowUpDown } from 'lucide-react';
+import { Search, Filter, Eye, ShoppingCart, ChevronLeft, ChevronRight, ArrowUpDown, X } from 'lucide-react';
 import { Navigation } from '@/components/sections/navigation';
 import Footer from '@/components/sections/footer';
+import AppointmentForm from '@/components/sections/appointment-form';
 
 interface Package {
   id: number;
@@ -50,6 +51,8 @@ export default function PackagesPage() {
   const [sortBy, setSortBy] = useState('name');
   const [currentPage, setCurrentPage] = useState(1);
   const [expandedDescriptions, setExpandedDescriptions] = useState<Set<number>>(new Set());
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
 
   const fetchPackages = useCallback(async () => {
     try {
@@ -132,6 +135,18 @@ export default function PackagesPage() {
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const openBooking = (pkg: Package) => {
+    setSelectedPackage(pkg);
+    setIsBookingOpen(true);
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeBooking = () => {
+    setIsBookingOpen(false);
+    setSelectedPackage(null);
+    document.body.style.overflow = '';
   };
 
   if (loading) {
@@ -330,13 +345,13 @@ export default function PackagesPage() {
                         <Eye className="w-4 h-4" />
                         Details
                       </Link>
-                      <Link
-                        href={`/book/${pkg.id}`}
+                      <button
+                        onClick={() => openBooking(pkg)}
                         className="flex-1 bg-primary text-white px-4 py-2 rounded-md text-center text-sm font-medium hover:bg-red-600 transition-colors flex items-center justify-center gap-2"
                       >
                         <ShoppingCart className="w-4 h-4" />
                         Book Now
-                      </Link>
+                      </button>
                     </div>
                   </div>
                 );
@@ -386,6 +401,50 @@ export default function PackagesPage() {
         )}
       </div>
       <Footer />
+
+      {/* Booking Modal */}
+      {isBookingOpen && selectedPackage && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/50" onClick={closeBooking} />
+          <div className="relative bg-white w-full max-w-3xl mx-4 rounded-lg shadow-lg overflow-hidden">
+            <div className="flex items-center justify-between px-6 py-4 border-b">
+              <h3 className="text-lg font-semibold">Book: {selectedPackage.name}</h3>
+              <button onClick={closeBooking} className="p-2 rounded hover:bg-gray-100" aria-label="Close booking form">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6 max-h-[80vh] overflow-y-auto">
+              <div className="lg:col-span-2">
+                <AppointmentForm />
+              </div>
+              <aside className="lg:col-span-1">
+                <div className="bg-gray-50 border rounded-lg p-4">
+                  <p className="text-sm text-gray-700 mb-2 font-medium">Package Summary</p>
+                  <p className="text-sm text-gray-900 mb-1">{selectedPackage.testCount} tests included</p>
+                  <div className="mb-3">
+                    {selectedPackage.discountPrice && selectedPackage.discountPrice < selectedPackage.price ? (
+                      <div className="flex items-center gap-2">
+                        <span className="text-xl font-bold text-primary">₹{selectedPackage.discountPrice}</span>
+                        <span className="text-sm text-gray-500 line-through">₹{selectedPackage.price}</span>
+                        {selectedPackage.discountPercentage && (
+                          <span className="text-xs bg-green-100 text-green-600 px-2 py-0.5 rounded">
+                            {selectedPackage.discountPercentage}% OFF
+                          </span>
+                        )}
+                      </div>
+                    ) : (
+                      <span className="text-xl font-bold text-gray-900">₹{selectedPackage.price}</span>
+                    )}
+                  </div>
+                  <Link href={`/packages/${selectedPackage.id}`} className="text-sm text-blue-600 hover:underline">
+                    View details
+                  </Link>
+                </div>
+              </aside>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
