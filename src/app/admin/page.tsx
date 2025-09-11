@@ -22,7 +22,10 @@ import {
   AlertCircle,
   BarChart3,
   Stethoscope,
-  RefreshCw
+  RefreshCw,
+  BookOpen,
+  Image,
+  Megaphone
 } from 'lucide-react';
 import { AdminDashboardLayout } from './layout';
 import { toast } from 'sonner';
@@ -232,242 +235,127 @@ export default function AdminDashboard() {
     return null;
   }
 
-  const statsCards: StatsCard[] = [
-    {
-      title: 'Total Packages',
-      value: dashboardData?.stats.totalPackages || 0,
-      change: '+12%',
-      trend: 'up',
-      icon: <Package className="h-5 w-5" />,
-      color: 'text-blue-600'
-    },
-    {
-      title: 'Active FAQs',
-      value: dashboardData?.stats.activeFaqs || 0,
-      change: '+5%',
-      trend: 'up',
-      icon: <HelpCircle className="h-5 w-5" />,
-      color: 'text-green-600'
-    },
-    {
-      title: 'Recent Appointments',
-      value: dashboardData?.stats.recentAppointments || 0,
-      change: '+8%',
-      trend: 'up',
-      icon: <Calendar className="h-5 w-5" />,
-      color: 'text-purple-600'
-    },
-    {
-      title: 'Lab Locations',
-      value: dashboardData?.stats.labLocations || 0,
-      change: 'Active',
-      trend: 'neutral',
-      icon: <MapPin className="h-5 w-5" />,
-      color: 'text-red-600'
-    }
-  ];
-
+  // Simplified Admin Dashboard UI
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">
-            Welcome back, {session.user.name}
-          </h1>
-          <p className="text-gray-600 mt-1">
-            Here's what's happening with your medical lab today
-          </p>
+          <h1 className="text-3xl font-bold text-gray-900">Admin Panel</h1>
+          <p className="text-gray-600 mt-1">Welcome, {session.user.name}. Manage website content easily.</p>
         </div>
-        <Button 
-          onClick={handleRefresh} 
-          disabled={refreshing}
-          variant="outline"
-          className="flex items-center gap-2"
-        >
-          <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
-          Refresh
-        </Button>
+        <div className="flex gap-2">
+          <Button onClick={() => router.push('/')} variant="outline">View Site</Button>
+          <Button onClick={() => router.push('/blog')} variant="outline">View Blog</Button>
+          <Button onClick={handleRefresh} disabled={refreshing} className="flex items-center gap-2">
+            <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} /> Refresh
+          </Button>
+        </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {statsCards.map((stat, index) => (
-          <Card key={index} className="transition-all duration-200 hover:shadow-lg hover:scale-105">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">
-                {stat.title}
-              </CardTitle>
-              <div className={stat.color}>
-                {stat.icon}
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-gray-900 mb-1">
-                {stat.value}
-              </div>
-              <div className="flex items-center text-sm">
-                {stat.trend === 'up' && (
-                  <TrendingUp className="h-3 w-3 text-green-500 mr-1" />
-                )}
-                <span className={
-                  stat.trend === 'up' ? 'text-green-600' : 
-                  stat.trend === 'down' ? 'text-red-600' : 
-                  'text-gray-500'
-                }>
-                  {stat.change}
-                </span>
-                <span className="text-gray-500 ml-1">from last month</span>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recent Activities */}
-        <Card>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <Card className="hover:shadow-md transition" onClick={() => router.push('/admin/packages/new')}>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Activity className="h-5 w-5 text-blue-600" />
-              Recent Activities
-            </CardTitle>
+            <CardTitle className="flex items-center gap-2"><Plus className="h-5 w-5" /> Add Package</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {dashboardData?.recentActivities.length ? (
-                dashboardData.recentActivities.map((activity) => (
-                  <div key={activity.id} className="flex items-start space-x-3 p-3 rounded-lg border hover:bg-gray-50 transition-colors">
-                    <div className="flex-shrink-0">
-                      {activity.type === 'appointment' ? (
-                        <Calendar className="h-5 w-5 text-purple-600 mt-0.5" />
-                      ) : activity.type === 'package' ? (
-                        <Package className="h-5 w-5 text-blue-600 mt-0.5" />
-                      ) : (
-                        <HelpCircle className="h-5 w-5 text-green-600 mt-0.5" />
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between">
-                        <p className="text-sm font-medium text-gray-900 truncate">
-                          {activity.title}
-                        </p>
-                        {activity.status && (
-                          <Badge 
-                            variant={
-                              activity.status === 'confirmed' ? 'default' :
-                              activity.status === 'pending' ? 'secondary' :
-                              'destructive'
-                            }
-                            className="ml-2"
-                          >
-                            {activity.status === 'confirmed' && <CheckCircle className="h-3 w-3 mr-1" />}
-                            {activity.status === 'pending' && <Clock className="h-3 w-3 mr-1" />}
-                            {activity.status === 'cancelled' && <AlertCircle className="h-3 w-3 mr-1" />}
-                            {activity.status}
-                          </Badge>
-                        )}
-                      </div>
-                      <p className="text-sm text-gray-500 mt-1">
-                        {activity.description}
-                      </p>
-                      <p className="text-xs text-gray-400 mt-1">
-                        {activity.time}
-                      </p>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="text-center py-8 text-gray-500">
-                  <Activity className="h-12 w-12 mx-auto mb-4 opacity-20" />
-                  <p>No recent activities</p>
-                </div>
-              )}
-            </div>
-          </CardContent>
+          <CardContent>Create a new test package for any page.</CardContent>
         </Card>
 
-        {/* Quick Actions */}
-        <Card>
+        <Card className="hover:shadow-md transition" onClick={() => router.push('/admin/packages')}>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Stethoscope className="h-5 w-5 text-red-600" />
-              Quick Actions
-            </CardTitle>
+            <CardTitle className="flex items-center gap-2"><Package className="h-5 w-5" /> Manage Packages</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 gap-4">
-              {quickActions.map((action, index) => (
-                <Button
-                  key={index}
-                  variant="outline"
-                  className={`h-auto p-4 flex flex-col items-center space-y-2 transition-all duration-200 hover:scale-105 ${action.color} text-white border-0`}
-                  onClick={() => router.push(action.href)}
-                >
-                  {action.icon}
-                  <div className="text-center">
-                    <div className="font-medium text-sm">{action.title}</div>
-                    <div className="text-xs opacity-90">{action.description}</div>
-                  </div>
-                </Button>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Appointment Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="border-l-4 border-l-yellow-500">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600 flex items-center gap-2">
-              <Clock className="h-4 w-4 text-yellow-500" />
-              Pending Appointments
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-gray-900">
-              {dashboardData?.stats.pendingAppointments || 0}
-            </div>
-            <p className="text-xs text-gray-500 mt-1">
-              Require confirmation
-            </p>
-          </CardContent>
+          <CardContent>View, edit, activate/deactivate packages.</CardContent>
         </Card>
 
-        <Card className="border-l-4 border-l-green-500">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600 flex items-center gap-2">
-              <CheckCircle className="h-4 w-4 text-green-500" />
-              Confirmed Appointments
-            </CardTitle>
+        <Card className="hover:shadow-md transition" onClick={() => router.push('/admin/blogs/new')}>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2"><BookOpen className="h-5 w-5" /> New Blog</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-gray-900">
-              {dashboardData?.stats.confirmedAppointments || 0}
-            </div>
-            <p className="text-xs text-gray-500 mt-1">
-              Ready for service
-            </p>
-          </CardContent>
+          <CardContent>Publish a new blog post.</CardContent>
         </Card>
 
-        <Card className="border-l-4 border-l-blue-500">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600 flex items-center gap-2">
-              <BarChart3 className="h-4 w-4 text-blue-500" />
-              System Status
-            </CardTitle>
+        <Card className="hover:shadow-md transition" onClick={() => router.push('/admin/blogs')}>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2"><BookOpen className="h-5 w-5" /> Manage Blogs</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-600">
-              Operational
-            </div>
-            <p className="text-xs text-gray-500 mt-1">
-              All systems running
-            </p>
-          </CardContent>
+          <CardContent>Edit, categorize, or tag blog posts.</CardContent>
+        </Card>
+
+        <Card className="hover:shadow-md transition" onClick={() => router.push('/admin/faqs')}>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2"><HelpCircle className="h-5 w-5" /> FAQs</CardTitle>
+          </CardHeader>
+          <CardContent>Manage frequently asked questions.</CardContent>
+        </Card>
+
+        <Card className="hover:shadow-md transition" onClick={() => router.push('/admin/hero-banners')}>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2"><Image className="h-5 w-5" /> Hero Banners</CardTitle>
+          </CardHeader>
+          <CardContent>Update homepage hero banners.</CardContent>
+        </Card>
+
+        <Card className="hover:shadow-md transition" onClick={() => router.push('/admin/promotional-banners')}>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2"><Megaphone className="h-5 w-5" /> Promotions</CardTitle>
+          </CardHeader>
+          <CardContent>Manage promotional banners/offers.</CardContent>
+        </Card>
+
+        <Card className="hover:shadow-md transition" onClick={() => router.push('/admin/lab-info')}>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2"><Stethoscope className="h-5 w-5" /> Lab Info</CardTitle>
+          </CardHeader>
+          <CardContent>Edit lab details and services.</CardContent>
+        </Card>
+
+        <Card className="hover:shadow-md transition" onClick={() => router.push('/admin/footer-addresses')}>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2"><MapPin className="h-5 w-5" /> Footer Addresses</CardTitle>
+          </CardHeader>
+          <CardContent>Manage branch addresses.</CardContent>
+        </Card>
+
+        <Card className="hover:shadow-md transition" onClick={() => router.push('/admin/footer-contacts')}>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2"><Users className="h-5 w-5" /> Footer Contacts</CardTitle>
+          </CardHeader>
+          <CardContent>Manage contact numbers and emails.</CardContent>
+        </Card>
+
+        <Card className="hover:shadow-md transition" onClick={() => router.push('/admin/testimonials')}>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2"><Users className="h-5 w-5" /> Testimonials</CardTitle>
+          </CardHeader>
+          <CardContent>Add or edit patient testimonials.</CardContent>
+        </Card>
+
+        <Card className="hover:shadow-md transition" onClick={() => router.push('/admin/team-members')}>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2"><Users className="h-5 w-5" /> Team</CardTitle>
+          </CardHeader>
+          <CardContent>Manage team member profiles.</CardContent>
+        </Card>
+
+        <Card className="hover:shadow-md transition" onClick={() => router.push('/admin/gallery')}>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2"><Image className="h-5 w-5" /> Gallery</CardTitle>
+          </CardHeader>
+          <CardContent>Upload or remove gallery images.</CardContent>
+        </Card>
+
+        <Card className="hover:shadow-md transition" onClick={() => router.push('/admin/appointments')}>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2"><Calendar className="h-5 w-5" /> Appointments</CardTitle>
+          </CardHeader>
+          <CardContent>View and manage bookings.</CardContent>
+        </Card>
+
+        <Card className="hover:shadow-md transition" onClick={() => router.push('/admin/site-settings')}>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2"><Settings className="h-5 w-5" /> Site Settings</CardTitle>
+          </CardHeader>
+          <CardContent>General configuration and preferences.</CardContent>
         </Card>
       </div>
     </div>

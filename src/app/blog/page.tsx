@@ -9,6 +9,8 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Search, Calendar, User, ArrowRight, Filter, ChevronLeft, ChevronRight, Share2, Mail, Facebook, Twitter, Linkedin, BookOpen, Clock, Tag } from 'lucide-react';
+import { Navigation } from '@/components/sections/navigation';
+import Footer from '@/components/sections/footer';
 
 interface BlogPost {
   id: number;
@@ -178,7 +180,9 @@ export default function BlogPage() {
   }, [blogs]);
 
   return (
-    <div className="min-h-screen bg-background">
+    <main className="min-h-screen bg-background">
+      <Navigation />
+      
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-[var(--color-hero-background)] to-[var(--color-hero-pattern)] py-16">
         <div className="container mx-auto px-4">
@@ -592,6 +596,7 @@ export default function BlogPage() {
           </main>
         </div>
       </div>
-    </div>
+      <Footer />
+    </main>
   );
 }
