@@ -18,6 +18,7 @@ export const Navigation = () => {
     { label: 'Special Offer', href: '/special-offer' },
     { label: 'Blog', href: '/blog' },
     { label: 'All Packages', href: '/packages' },
+    { label: 'Terms & Conditions', href: '/terms-and-conditions' },
     { label: 'Admin', href: '/admin' },
   ];
 
